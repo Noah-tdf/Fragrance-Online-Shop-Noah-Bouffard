@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+description = 'TermProject_Bouffard'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // --- Core Spring Boot Dependencies ---
+    implementation 'org.springframework.boot:spring-boot-starter-web'          // For REST controllers
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'     // For JPA + @Entity + @Id
+    runtimeOnly 'com.h2database:h2'                                            // In-memory database
+
+    // --- Lombok (auto-generates getters/setters/constructors) ---
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // --- Testing ---
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
