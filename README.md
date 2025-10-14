@@ -77,6 +77,23 @@ bash
 
 ---
 
+---
+
+### UML & ERD Summary
+
+**UML (Class Relationships)**
+- `Customer` → has many `Order` objects (`@OneToMany`)
+- `Order` → belongs to one `Customer` and has many `Product` objects (`@ManyToOne`, `@OneToMany`)
+- `Product` → belongs to one `Order` (`@ManyToOne`)
+
+**ERD (Entity Relationships)**
+- **Customer (1)** ───< **Order (Many)**
+- **Order (1)** ───< **Product (Many)**
+- Foreign keys:
+  - `customer_id` in **Order**
+  - `order_id` in **Product**
+
+
 ###  Database Configuration
 
 The project uses an **H2 in-memory database**, automatically created and filled with sample data on startup.
