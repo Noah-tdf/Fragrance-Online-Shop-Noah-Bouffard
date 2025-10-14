@@ -53,22 +53,42 @@ bash
 | DELETE | `/api/products/{id}`            | Delete a product                           |
 | GET    | `/api/products/order/{orderId}` | Retrieve all products for a specific order |
 
-💾 Database Configuration
 
-The project uses an H2 in-memory database, automatically created and filled with sample data on startup.
+## ORDERS
 
-Access the H2 Console:
+| Method | URL                                 | Description                                 |
+| ------ | ----------------------------------- | ------------------------------------------- |
+| GET    | `/api/orders`                       | Retrieve all orders                         |
+| GET    | `/api/orders/{id}`                  | Retrieve a single order by ID               |
+| POST   | `/api/orders`                       | Create a new order                          |
+| DELETE | `/api/orders/{id}`                  | Delete an order                             |
+| GET    | `/api/orders/customer/{customerId}` | Retrieve all orders for a specific customer |
 
-URL → http://localhost:8080/h2-console
 
-JDBC URL → jdbc:h2:mem:fragranceDB
+## CUSTOMERS
 
-Username → sa
+| Method | URL                   | Description                      |
+| ------ | --------------------- | -------------------------------- |
+| GET    | `/api/customers`      | Retrieve all customers           |
+| GET    | `/api/customers/{id}` | Retrieve a single customer by ID |
+| POST   | `/api/customers`      | Add a new customer               |
+| DELETE | `/api/customers/{id}` | Delete a customer                |
 
-Password → (leave blank)
 
-application.properties:
+---
 
+## 💾 Database Configuration
+
+The project uses an **H2 in-memory database**, automatically created and filled with sample data on startup.
+
+**Access the H2 Console:**
+- URL → [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+- JDBC URL → `jdbc:h2:mem:fragranceDB`
+- Username → `sa`
+- Password → *(leave blank)*
+
+**application.properties**
+properties
 spring.datasource.url=jdbc:h2:mem:fragranceDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
@@ -77,6 +97,7 @@ spring.jpa.hibernate.ddl-auto=create-drop
 spring.jpa.show-sql=true
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
+
 
 🌱 Sample Data
 
