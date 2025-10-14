@@ -1,4 +1,4 @@
-# Fragrance Online Shop – Spring Boot Backend
+# Fragrance Online Shop – Noah Bouffard
 
 **Author:** Noah Bouffard  
 **Student ID:** 2431848  
