@@ -8,7 +8,7 @@
 
 ---
 
-## 📖 Project Overview
+##  Project Overview
 
 The **Fragrance Online Shop** is a RESTful Spring Boot backend designed to manage customers, perfume products, and their purchase orders.  
 It follows a **clean 3-layer architecture** separating data access, business logic, and presentation.
@@ -22,14 +22,14 @@ It follows a **clean 3-layer architecture** separating data access, business log
 
 ---
 
-## ⚙️ How to Run Locally
+##  How to Run Locally
 
-### 1️⃣ Requirements
+### 1️ Requirements
 - **Java 22**
 - **Gradle** (included with wrapper)
 - **IntelliJ IDEA** or any Java IDE
 
-### 2️⃣ Running the Project
+### 2️ Running the Project
 **Option 1 – IntelliJ**
 1. Open the project folder in IntelliJ.  
 2. Locate `TermProjectBouffardApplication.java`.  
@@ -41,27 +41,18 @@ bash
 
 
 
-🧩 API Endpoints
-🔹 Products
-Method	URL	Description
-GET	/api/products	Retrieve all products
-GET	/api/products/{id}	Retrieve a single product by ID
-POST	/api/products	Add a new product
-DELETE	/api/products/{id}	Delete a product
-GET	/api/products/order/{orderId}	Retrieve all products for a specific order
-🔹 Orders
-Method	URL	Description
-GET	/api/orders	Retrieve all orders
-GET	/api/orders/{id}	Retrieve a single order by ID
-POST	/api/orders	Create a new order
-DELETE	/api/orders/{id}	Delete an order
-GET	/api/orders/customer/{customerId}	Retrieve all orders for a specific customer
-🔹 Customers
-Method	URL	Description
-GET	/api/customers	Retrieve all customers
-GET	/api/customers/{id}	Retrieve a single customer by ID
-POST	/api/customers	Add a new customer
-DELETE	/api/customers/{id}	Delete a customer
+###  API Endpoints
+
+## PROUCTS
+
+| Method | URL                             | Description                                |
+| ------ | ------------------------------- | ------------------------------------------ |
+| GET    | `/api/products`                 | Retrieve all products                      |
+| GET    | `/api/products/{id}`            | Retrieve a single product by ID            |
+| POST   | `/api/products`                 | Add a new product                          |
+| DELETE | `/api/products/{id}`            | Delete a product                           |
+| GET    | `/api/products/order/{orderId}` | Retrieve all products for a specific order |
+
 💾 Database Configuration
 
 The project uses an H2 in-memory database, automatically created and filled with sample data on startup.
