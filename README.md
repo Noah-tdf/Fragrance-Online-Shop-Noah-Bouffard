@@ -77,7 +77,7 @@ bash
 
 ---
 
-## 💾 Database Configuration
+###  Database Configuration
 
 The project uses an **H2 in-memory database**, automatically created and filled with sample data on startup.
 
@@ -88,7 +88,7 @@ The project uses an **H2 in-memory database**, automatically created and filled 
 - Password → *(leave blank)*
 
 **application.properties**
-properties
+```properties
 spring.datasource.url=jdbc:h2:mem:fragranceDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
@@ -97,6 +97,7 @@ spring.jpa.hibernate.ddl-auto=create-drop
 spring.jpa.show-sql=true
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
+
 
 
 🌱 Sample Data
