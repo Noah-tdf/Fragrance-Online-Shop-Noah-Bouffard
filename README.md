@@ -102,7 +102,7 @@ spring.h2.console.path=/h2-console
 
 ---
 
-## 🌱 Sample Data
+###  Sample Data
 
 When you start the application, a few **demo records** are automatically inserted by the `CommandLineRunner` inside  
 `TermProjectBouffardApplication.java`.
@@ -127,18 +127,22 @@ GET /api/customers     → Lists demo customers
 
 ```
 
-🧠 Error Handling
+---
 
-The backend uses .orElseThrow() in service classes and a Global Exception Handler that returns clean JSON error responses.
+### Error Handling
 
-Example:
+The backend uses `.orElseThrow()` in the service layer to handle cases where a resource (like a Product, Order, or Customer) cannot be found.  
+A **Global Exception Handler** (inside the `Exception` package) catches these runtime errors and returns a clean JSON error response instead of a raw stack trace.
 
+**Example of a JSON error response:**
+```json
 {
   "timestamp": "2025-10-14T10:00:00",
   "status": 404,
   "error": "Not Found",
   "message": "Product not found with ID: 99"
 }
+```
 
 🧱 Project Structure
 src/main/java/org/example/termproject_bouffard/
