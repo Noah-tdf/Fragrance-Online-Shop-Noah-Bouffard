@@ -36,7 +36,7 @@ It follows a **clean 3-layer architecture** separating data access, business log
 3. Click the green ▶️ *Run* button.
 
 **Option 2 – Terminal**
-```bash
+bash
 ./gradlew bootRun
 
 
