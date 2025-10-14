@@ -146,7 +146,7 @@ A **Global Exception Handler** (inside the `Exception` package) catches these ru
 
 ---
 
-## 🧱 Project Structure
+### Project Structure
 
 Below is the structure of the backend application.  
 It follows a **3-layer architecture**:  
@@ -180,43 +180,31 @@ src/main/java/org/example/termproject_bouffard/
  └── TermProjectBouffardApplication.java
 ```
 
-🧰 Technologies Used
+---
 
-Spring Boot 3.5.6
+## 🧰 Technologies Used
 
-Spring Data JPA
+This project is built with modern Java backend technologies to ensure scalability, maintainability, and ease of development.
 
-H2 Database
+| Technology | Purpose |
+|-------------|----------|
+| **Spring Boot 3.5.6** | Main framework for building and running the application |
+| **Spring Data JPA** | Simplifies database access and object-relational mapping (ORM) |
+| **H2 Database** | Lightweight in-memory database for development and testing |
+| **Lombok** | Reduces boilerplate code by auto-generating constructors and getters/setters |
+| **Gradle Build Tool** | Manages dependencies and automates the build process |
+| **Java 22** | Programming language used to develop the backend |
+| **Postman** | Used to test API endpoints (GET, POST, DELETE requests) |
 
-Lombok
+---
 
-Gradle Build Tool
+**Additional Notes:**
+- All dependencies are managed automatically through Gradle’s `build.gradle` file.  
+- H2 provides fast, temporary storage that resets with every app restart (ideal for testing).  
+- The project is lightweight, modular, and easily deployable to Render or Railway.
 
-Java 22
 
-Postman for REST API testing
-
-🧾 Deployment (Next Milestone)
-
-The project is ready to deploy to:
-
-Render
-
-Railway
-
-or any cloud Spring Boot host.
-
-✅ Rubric Alignment
-Section	Task	Points
-Design Report	UML, Endpoints, Validation	5
-Backend Architecture	3-layer, DTO naming	6
-Data & Persistence	H2 config + seeded data	4
-API Functionality	CRUD + relationship endpoints	6
-Error Handling	Exception handling	2
-Documentation	README + clarity	2
-Total	25 / 25	
-Bonus	Exception handler + basic tests	+2
-📎 License
+## License
 
 This project is part of Champlain College Saint-Lambert coursework.
 All rights reserved © Noah Bouffard 2025.
