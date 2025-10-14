@@ -77,7 +77,7 @@ bash
 
 ---
 
----
+
 
 ### UML & ERD Summary
 
@@ -92,6 +92,23 @@ bash
 - Foreign keys:
   - `customer_id` in **Order**
   - `order_id` in **Product**
+ 
+
+
+---
+
+### Validation Plan
+
+| Field | Entity | Validation Rule |
+|--------|---------|----------------|
+| firstName, lastName | Customer | `@NotBlank`, `@Size(min = 2)` |
+| email | Customer | `@Email`, `@NotBlank` |
+| name, brand | Product | `@NotBlank` |
+| price | Product | `@Positive` |
+| totalAmount | Order | `@Positive` |
+
+All invalid inputs return **HTTP 400 – Bad Request** with error details.
+
 
 
 ###  Database Configuration
