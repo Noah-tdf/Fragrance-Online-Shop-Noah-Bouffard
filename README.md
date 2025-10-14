@@ -98,38 +98,34 @@ spring.jpa.show-sql=true
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2-console
 
+```
 
+---
 
-🌱 Sample Data
+## 🌱 Sample Data
 
-On startup, the system automatically loads demo records using a CommandLineRunner in
-TermProjectBouffardApplication.java.
+When you start the application, a few **demo records** are automatically inserted by the `CommandLineRunner` inside  
+`TermProjectBouffardApplication.java`.
 
-Customers
+**Customers**
+- Luca Raro — Montreal  
+- Emma Smith — Toronto  
 
-Luca Raro — Montreal
+**Orders**
+- Two demo orders linked to the customers  
 
-Emma Smith — Toronto
+**Products**
+- *YSL Babycat* – Warm amber scent  
+- *Xerjoff Erba Pura* – Fruity luxury fragrance  
+- *Valentino Born in Roma* – Modern woody floral  
 
-Orders
+**Try testing in Postman:**
+```http
+GET /api/products      → Lists all perfumes  
+GET /api/orders        → Shows demo orders  
+GET /api/customers     → Lists demo customers  
 
-Two demo orders linked to customers
-
-Products
-
-YSL Babycat – Warm amber scent
-
-Xerjoff Erba Pura – Fruity luxury fragrance
-
-Valentino Born in Roma – Modern woody floral
-
-After running the app, open Postman and test:
-
-GET /api/products → shows all perfumes
-
-GET /api/orders → shows demo orders
-
-GET /api/customers → shows demo customers
+```
 
 🧠 Error Handling
 
