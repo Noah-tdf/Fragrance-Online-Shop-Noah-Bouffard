@@ -144,7 +144,17 @@ A **Global Exception Handler** (inside the `Exception` package) catches these ru
 }
 ```
 
-🧱 Project Structure
+---
+
+## 🧱 Project Structure
+
+Below is the structure of the backend application.  
+It follows a **3-layer architecture**:  
+- **DataAccessLayer** → Entities and Repositories  
+- **BusinessLogicLayer** → Services and logic  
+- **PresentationLayer** → REST Controllers (endpoints)
+
+```bash
 src/main/java/org/example/termproject_bouffard/
  ├── DataAccessLayer/
  │    ├── Customer.java
@@ -168,6 +178,7 @@ src/main/java/org/example/termproject_bouffard/
  │    └── GlobalExceptionHandler.java
  │
  └── TermProjectBouffardApplication.java
+```
 
 🧰 Technologies Used
 
