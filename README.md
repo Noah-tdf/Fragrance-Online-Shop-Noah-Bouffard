@@ -142,7 +142,7 @@ When you start the application, a few **demo records** are automatically inserte
 `TermProjectBouffardApplication.java`.
 
 **Customers**
-- Luca Raro — Montreal  
+- Noah Bouffard — Montreal  
 - Emma Smith — Toronto  
 
 **Orders**
