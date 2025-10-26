@@ -136,6 +136,12 @@ spring.h2.console.path=/h2-console
 
 ---
 
+
+### DTO Implementation
+The application uses DTOs (`CustomerRequestDTO`, `CustomerResponseDTO`, etc.) with mappers to isolate entity models from the API layer, 
+
+---
+
 ###  Sample Data
 
 When you start the application, a few **demo records** are automatically inserted by the `CommandLineRunner` inside  
