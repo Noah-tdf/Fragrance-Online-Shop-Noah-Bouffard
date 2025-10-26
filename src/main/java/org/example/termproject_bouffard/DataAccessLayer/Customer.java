@@ -2,6 +2,7 @@ package org.example.termproject_bouffard.DataAccessLayer;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 // Noah Bouffard : 2431848
 
 @Entity
@@ -20,10 +21,17 @@ public class Customer {
     private String address;
     private String phone;
 
-    public Customer(String firstName, String lastName, String email, String address) {
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Order> orders;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Product> products;
+
+    public Customer(String firstName, String lastName, String email, String address, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.address = address;
+        this.phone = phone;
     }
 }
