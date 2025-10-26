@@ -2,8 +2,6 @@ package org.example.termproject_bouffard.DataAccessLayer;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
-
 // Noah Bouffard : 2431848
 
 @Entity
@@ -19,11 +17,13 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String email;
+    private String address;
     private String phone;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Product> products;
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Order> orders;
+    public Customer(String firstName, String lastName, String email, String address) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+    }
 }
