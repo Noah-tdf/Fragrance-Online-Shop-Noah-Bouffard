@@ -2,46 +2,41 @@ package org.example.termproject_bouffard.PresentationLayer;
 
 import lombok.RequiredArgsConstructor;
 import org.example.termproject_bouffard.BusinessLogicLayer.ProductService;
-import org.example.termproject_bouffard.DataAccessLayer.Product;
+import org.example.termproject_bouffard.DTO.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
+import java.net.URI;
 import java.util.List;
+// Noah Bouffard : 2431848
 
-// Noah Bouffard - 2431848
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
-    // GET all products
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<ProductResponseDTO> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    // GET product by ID
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
+    public ProductResponseDTO getProductById(@PathVariable Long id) {
         return productService.getProductById(id);
     }
 
-    // POST a new product
     @PostMapping
-    public Product addProduct(@RequestBody Product product) {
-        return productService.saveProduct(product);
+    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO dto) {
+        ProductResponseDTO created = productService.createProduct(dto);
+        return ResponseEntity
+                .created(URI.create("/products/" + created.getId()))
+                .body(created);
     }
 
-    // DELETE a product
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-    }
-
-    // GET all products for a given order
-    @GetMapping("/order/{orderId}")
-    public List<Product> getProductsByOrder(@PathVariable Long orderId) {
-        return productService.getProductsByOrderId(orderId);
     }
 }

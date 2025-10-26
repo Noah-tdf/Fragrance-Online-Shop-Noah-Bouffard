@@ -2,46 +2,41 @@ package org.example.termproject_bouffard.PresentationLayer;
 
 import lombok.RequiredArgsConstructor;
 import org.example.termproject_bouffard.BusinessLogicLayer.OrderService;
-import org.example.termproject_bouffard.DataAccessLayer.Order;
+import org.example.termproject_bouffard.DTO.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
+import java.net.URI;
 import java.util.List;
+// Noah Bouffard : 2431848
 
-// Noah Bouffard - 2431848
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
-    // GET all orders
     @GetMapping
-    public List<Order> getAllOrders() {
+    public List<OrderResponseDTO> getAllOrders() {
         return orderService.getAllOrders();
     }
 
-    // GET order by ID
     @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable Long id) {
+    public OrderResponseDTO getOrderById(@PathVariable Long id) {
         return orderService.getOrderById(id);
     }
 
-    // POST a new order
     @PostMapping
-    public Order addOrder(@RequestBody Order order) {
-        return orderService.saveOrder(order);
+    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderRequestDTO dto) {
+        OrderResponseDTO created = orderService.createOrder(dto);
+        return ResponseEntity
+                .created(URI.create("/orders/" + created.getId()))
+                .body(created);
     }
 
-    // DELETE an order
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
-    }
-
-    // GET all orders for a given customer
-    @GetMapping("/customer/{customerId}")
-    public List<Order> getOrdersByCustomer(@PathVariable Long customerId) {
-        return orderService.getOrdersByCustomerId(customerId);
     }
 }

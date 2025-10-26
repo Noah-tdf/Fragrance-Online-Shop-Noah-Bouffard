@@ -3,15 +3,13 @@ package org.example.termproject_bouffard.DataAccessLayer;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-public class Product {
+// Noah Bouffard : 2431848
 
-    // Noah Bouffard
-    // 2431848
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,23 +17,10 @@ public class Product {
 
     private String name;
     private String brand;
-    private String description;
     private double price;
-    private String fragranceNotes;
-    private String gender;
+    private String description;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    public Product(String name, String brand, String description,
-                   double price, String fragranceNotes, String gender, Order order) {
-        this.name = name;
-        this.brand = brand;
-        this.description = description;
-        this.price = price;
-        this.fragranceNotes = fragranceNotes;
-        this.gender = gender;
-        this.order = order;
-    }
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }

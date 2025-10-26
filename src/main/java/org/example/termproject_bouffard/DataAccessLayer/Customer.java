@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+// Noah Bouffard : 2431848
+
 @Entity
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
+@AllArgsConstructor
 public class Customer {
 
     @Id
@@ -17,11 +18,11 @@ public class Customer {
 
     private String firstName;
     private String lastName;
-
-    @Column(unique = true, nullable = false)
     private String email;
+    private String phone;
 
-    private String address;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Product> products;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
