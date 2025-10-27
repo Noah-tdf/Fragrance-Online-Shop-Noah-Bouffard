@@ -27,8 +27,7 @@ public class TermProjectBouffardApplication implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
 
-
-    public TermProjectBouffardApplication(CustomerRepository customerRepository,ProductRepository productRepository, OrderRepository orderRepository) {
+    public TermProjectBouffardApplication(CustomerRepository customerRepository, ProductRepository productRepository, OrderRepository orderRepository) {
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
@@ -44,20 +43,22 @@ public class TermProjectBouffardApplication implements CommandLineRunner {
 
         Customer c1 = new Customer("Noah", "Bouffard", "noah@example.com", "123 Elm Street", "438-555-1212");
         Customer c2 = new Customer("Lucas", "Smith", "lucas@example.com", "456 Oak Avenue", "438-555-3434");
-
         customerRepository.saveAll(Arrays.asList(c1, c2));
 
-
-        Order o1 = new Order(LocalDate.now(), 540.00, c1);
-        Order o2 = new Order(LocalDate.now(), 320.00, c2);
-        orderRepository.saveAll(Arrays.asList(o1, o2));
-
-        Product p1 = new Product("YSL Babycat", "Yves Saint Laurent", "Warm vanilla amber scent", 320.00, "Amber, Vanilla", "Unisex", o1);
-        Product p2 = new Product("Parfums de Marly Althaïr", "Parfums de Marly", "Vanilla and wood blend", 220.00, "Vanilla, Cedarwood", "Male", o2);
-        Product p3 = new Product("Xerjoff Erba Pura", "Xerjoff", "Fruity citrus amber blend", 250.00, "Citrus, Amber", "Unisex", o1);
-
+        Product p1 = new Product("YSL Babycat", "Yves Saint Laurent", "Warm vanilla amber scent", 320.00, "Amber, Vanilla", "Unisex", null);
+        Product p2 = new Product("Parfums de Marly Althaïr", "Parfums de Marly", "Vanilla and wood blend", 220.00, "Vanilla, Cedarwood", "Male", null);
+        Product p3 = new Product("Xerjoff Erba Pura", "Xerjoff", "Fruity citrus amber blend", 250.00, "Citrus, Amber", "Unisex", null);
         productRepository.saveAll(Arrays.asList(p1, p2, p3));
 
+        Order o1 = new Order(LocalDate.now(), 540.00, c1);
+        o1.setProduct(p1);
+        o1.setQuantity(2);
+
+        Order o2 = new Order(LocalDate.now(), 320.00, c2);
+        o2.setProduct(p2);
+        o2.setQuantity(1);
+
+        orderRepository.saveAll(Arrays.asList(o1, o2));
 
         for (Product product : productRepository.findAll()) {
             logger.info("Product: {}, Brand: {}, Price: ${}",
@@ -70,10 +71,12 @@ public class TermProjectBouffardApplication implements CommandLineRunner {
         }
 
         for (Order order : orderRepository.findAll()) {
-            logger.info("Order ID: {}, Total: ${}, Customer: {}",
-                    order.getId(), order.getTotalAmount(), order.getCustomer().getFirstName());
+            logger.info("Order ID: {}, Product: {}, Customer: {}",
+                    order.getId(),
+                    order.getProduct() != null ? order.getProduct().getName() : "None",
+                    order.getCustomer().getFirstName());
         }
 
-        logger.info(" Sample fragrance data successfully saved to H2 database!");
+        logger.info("Sample fragrance data successfully saved to H2 database!");
     }
 }

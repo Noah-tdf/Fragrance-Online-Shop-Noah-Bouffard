@@ -35,12 +35,16 @@ public class OrderService {
     public OrderResponseDTO createOrder(OrderRequestDTO dto) {
         Customer customer = customerRepository.findById(dto.getCustomerId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
         Order order = orderMapper.fromRequestModelToEntity(dto);
         order.setCustomer(customer);
         order.setProduct(product);
+
+        double total = product.getPrice() * dto.getQuantity();
+        order.setTotalAmount(total);
 
         Order saved = orderRepository.save(order);
         return orderMapper.toResponse(saved);
@@ -52,12 +56,14 @@ public class OrderService {
 
         Customer customer = customerRepository.findById(dto.getCustomerId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
         existing.setCustomer(customer);
         existing.setProduct(product);
         existing.setQuantity(dto.getQuantity());
+        existing.setTotalAmount(product.getPrice() * dto.getQuantity());
 
         return orderMapper.toResponse(orderRepository.save(existing));
     }
