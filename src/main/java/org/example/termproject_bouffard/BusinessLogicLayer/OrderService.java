@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import java.util.List;
+
 // Noah Bouffard : 2431848
 
 @Service
@@ -42,9 +43,7 @@ public class OrderService {
         Order order = orderMapper.fromRequestModelToEntity(dto);
         order.setCustomer(customer);
         order.setProduct(product);
-
-        double total = product.getPrice() * dto.getQuantity();
-        order.setTotalAmount(total);
+        order.setTotalAmount(product.getPrice() * dto.getQuantity());
 
         Order saved = orderRepository.save(order);
         return orderMapper.toResponse(saved);
@@ -60,6 +59,7 @@ public class OrderService {
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
+        existing.setOrderDate(dto.getOrderDate());
         existing.setCustomer(customer);
         existing.setProduct(product);
         existing.setQuantity(dto.getQuantity());

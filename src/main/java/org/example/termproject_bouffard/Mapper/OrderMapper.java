@@ -3,46 +3,37 @@ package org.example.termproject_bouffard.Mapper;
 import org.example.termproject_bouffard.DataAccessLayer.*;
 import org.example.termproject_bouffard.DTO.*;
 import org.springframework.stereotype.Component;
+
 // Noah Bouffard : 2431848
 
 @Component
 public class OrderMapper {
 
     public OrderResponseDTO toResponse(Order order) {
-        Customer customer = order.getCustomer();
-        Product product = order.getProduct();
+        Customer c = order.getCustomer();
+        Product p = order.getProduct();
 
-        CustomerSummary customerSummary;
-        ProductSummary productSummary;
+        CustomerSummary customerSummary = new CustomerSummary(
+                c.getId(), c.getFirstName(), c.getLastName()
+        );
 
-        if (customer == null)
-            customerSummary = null;
-        else
-            customerSummary = new CustomerSummary(
-                    customer.getId(),
-                    customer.getFirstName(),
-                    customer.getLastName()
-            );
-
-        if (product == null)
-            productSummary = null;
-        else
-            productSummary = new ProductSummary(
-                    product.getId(),
-                    product.getName(),
-                    product.getBrand()
-            );
+        ProductSummary productSummary = new ProductSummary(
+                p.getId(), p.getName(), p.getBrand()
+        );
 
         return new OrderResponseDTO(
                 order.getId(),
+                order.getOrderDate(),
                 customerSummary,
                 productSummary,
-                order.getQuantity()
+                order.getQuantity(),
+                order.getTotalAmount()
         );
     }
 
     public Order fromRequestModelToEntity(OrderRequestDTO dto) {
         Order order = new Order();
+        order.setOrderDate(dto.getOrderDate());
         order.setQuantity(dto.getQuantity());
         return order;
     }
