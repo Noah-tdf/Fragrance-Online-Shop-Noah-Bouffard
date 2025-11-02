@@ -45,9 +45,9 @@ public class TermProjectBouffardApplication implements CommandLineRunner {
         Customer c2 = new Customer("Lucas", "Smith", "lucas@example.com", "456 Oak Avenue", "438-555-3434");
         customerRepository.saveAll(Arrays.asList(c1, c2));
 
-        Product p1 = new Product("YSL Babycat", "Yves Saint Laurent", "Warm vanilla amber scent", 320.00, "Amber, Vanilla", "Unisex", null);
-        Product p2 = new Product("Parfums de Marly Althaïr", "Parfums de Marly", "Vanilla and wood blend", 220.00, "Vanilla, Cedarwood", "Male", null);
-        Product p3 = new Product("Xerjoff Erba Pura", "Xerjoff", "Fruity citrus amber blend", 250.00, "Citrus, Amber", "Unisex", null);
+        Product p1 = new Product("YSL Babycat", "Yves Saint Laurent", "Warm vanilla amber scent", 320.00, "Amber, Vanilla", "Unisex");
+        Product p2 = new Product("Parfums de Marly Althaïr", "Parfums de Marly", "Vanilla and wood blend", 220.00, "Vanilla, Cedarwood", "Male");
+        Product p3 = new Product("Xerjoff Erba Pura", "Xerjoff", "Fruity citrus amber blend", 250.00, "Citrus, Amber", "Unisex");
         productRepository.saveAll(Arrays.asList(p1, p2, p3));
 
         Order o1 = new Order(LocalDate.now(), 540.00, c1);
