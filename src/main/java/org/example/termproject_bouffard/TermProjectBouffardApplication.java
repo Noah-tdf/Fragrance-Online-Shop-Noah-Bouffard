@@ -39,7 +39,7 @@ public class TermProjectBouffardApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args)  {
 
         Customer c1 = new Customer("Noah", "Bouffard", "noah@example.com", "123 Elm Street", "438-555-1212");
         Customer c2 = new Customer("Lucas", "Smith", "lucas@example.com", "456 Oak Avenue", "438-555-3434");
