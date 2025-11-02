@@ -24,8 +24,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Product> products;
+
 
     public Customer(String firstName, String lastName, String email, String address, String phone) {
         this.firstName = firstName;
