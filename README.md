@@ -15,7 +15,8 @@ It follows a **clean 3-layer architecture** separating data access, business log
 
 **Primary Users:** shop administrators who manage products, track orders, and maintain customer data.  
 **Core Features:**
-- CRUD operations for `Product`, `Order`, and `Customer`
+- CRUD operations for `Customer`, `Product`, and `Order`
+- Supports multi-item orders through `OrderItem` entity
 - Relationship handling between customers, orders, and products
 - H2 in-memory database with sample data
 - REST-compliant endpoints ready for frontend integration
@@ -47,32 +48,48 @@ bash
 
 | Method | URL                             | Description                                |
 | ------ | ------------------------------- | ------------------------------------------ |
-| GET    | `/api/products`                 | Retrieve all products                      |
-| GET    | `/api/products/{id}`            | Retrieve a single product by ID            |
-| POST   | `/api/products`                 | Add a new product                          |
-| DELETE | `/api/products/{id}`            | Delete a product                           |
-| GET    | `/api/products/order/{orderId}` | Retrieve all products for a specific order |
+| GET    | `/products`                 | Retrieve all products                      |
+| GET    | `/products/{id}`            | Retrieve a single product by ID            |
+| POST   | `/products`                 | Add a new product                          |
+| DELETE | `/products/{id}`            | Delete a product                           |
+| GET    | `/products/order/{orderId}` | Retrieve all products for a specific order |
 
 
 ## ORDERS
 
 | Method | URL                                 | Description                                 |
 | ------ | ----------------------------------- | ------------------------------------------- |
-| GET    | `/api/orders`                       | Retrieve all orders                         |
-| GET    | `/api/orders/{id}`                  | Retrieve a single order by ID               |
-| POST   | `/api/orders`                       | Create a new order                          |
-| DELETE | `/api/orders/{id}`                  | Delete an order                             |
-| GET    | `/api/orders/customer/{customerId}` | Retrieve all orders for a specific customer |
+| GET    | `/orders`                       | Retrieve all orders                         |
+| GET    | `/orders/{id}`                  | Retrieve a single order by ID               |
+| POST   | `/orders`                       | Create a new order                          |
+| DELETE | `/orders/{id}`                  | Delete an order                             |
+| GET    | `/orders/customer/{customerId}` | Retrieve all orders for a specific customer |
 
+### Multi-Item Orders
+
+Orders now support multiple products at once using an `items` array.
+
+**Example JSON Request:**
+```json
+{
+  "orderDate": "2025-11-02",
+  "customerId": 1,
+  "items": [
+    { "productId": 1, "quantity": 2 },
+    { "productId": 3, "quantity": 1 }
+  ]
+}
+
+```
 
 ## CUSTOMERS
 
 | Method | URL                   | Description                      |
 | ------ | --------------------- | -------------------------------- |
-| GET    | `/api/customers`      | Retrieve all customers           |
-| GET    | `/api/customers/{id}` | Retrieve a single customer by ID |
-| POST   | `/api/customers`      | Add a new customer               |
-| DELETE | `/api/customers/{id}` | Delete a customer                |
+| GET    | `/customers`      | Retrieve all customers           |
+| GET    | `/customers/{id}` | Retrieve a single customer by ID |
+| POST   | `/customers`      | Add a new customer               |
+| DELETE | `/customers/{id}` | Delete a customer                |
 
 
 ---
@@ -83,12 +100,13 @@ bash
 
 **UML (Class Relationships)**
 - `Customer` → has many `Order` objects (`@OneToMany`)
-- `Order` → belongs to one `Customer` and has many `Product` objects (`@ManyToOne`, `@OneToMany`)
-- `Product` → belongs to one `Order` (`@ManyToOne`)
+- `Order` → belongs to one `Customer` and has many `OrderItem` objects
+- `OrderItem` → belongs to one `Order` and one `Product`
 
 **ERD (Entity Relationships)**
 - **Customer (1)** ───< **Order (Many)**
-- **Order (1)** ───< **Product (Many)**
+- **Order (1)** ───< **OrderItem (Many)**
+- **OrderItem (Many)** ───> **Product (1)**
 - Foreign keys:
   - `customer_id` in **Order**
   - `order_id` in **Product**
@@ -161,9 +179,9 @@ When you start the application, a few **demo records** are automatically inserte
 
 **Try testing in Postman:**
 ```http
-GET /api/products      → Lists all perfumes  
-GET /api/orders        → Shows demo orders  
-GET /api/customers     → Lists demo customers  
+GET /products      → Lists all perfumes  
+GET /orders        → Shows demo orders  
+GET /customers     → Lists demo customers  
 
 ```
 
@@ -198,31 +216,51 @@ It follows a **3-layer architecture**:
 src/main/java/org/example/termproject_bouffard/
  ├── DataAccessLayer/
  │    ├── Customer.java
- │    ├── Order.java
  │    ├── Product.java
+ │    ├── Order.java
+ │    ├── OrderItem.java
  │    ├── CustomerRepository.java
+ │    ├── ProductRepository.java
  │    ├── OrderRepository.java
- │    └── ProductRepository.java
+ │    └── OrderItemRepository.java
  │
  ├── BusinessLogicLayer/
  │    ├── CustomerService.java
- │    ├── OrderService.java
- │    └── ProductService.java
+ │    ├── ProductService.java
+ │    └── OrderService.java
  │
  ├── PresentationLayer/
  │    ├── CustomerController.java
- │    ├── OrderController.java
- │    └── ProductController.java
+ │    ├── ProductController.java
+ │    └── OrderController.java
+ │
+ ├── DTO/
+ │    ├── CustomerRequestDTO.java
+ │    ├── CustomerResponseDTO.java
+ │    ├── ProductRequestDTO.java
+ │    ├── ProductResponseDTO.java
+ │    ├── OrderRequestDTO.java
+ │    ├── OrderResponseDTO.java
+ │    ├── OrderItemRequestDTO.java
+ │    ├── OrderItemResponseDTO.java
+ │    ├── CustomerSummary.java
+ │    └── ProductSummary.java
+ │
+ ├── Mapper/
+ │    ├── CustomerMapper.java
+ │    ├── ProductMapper.java
+ │    └── OrderMapper.java
  │
  ├── Exception/
  │    └── GlobalExceptionHandler.java
  │
  └── TermProjectBouffardApplication.java
+
 ```
 
 ---
 
-## 🧰 Technologies Used
+##  Technologies Used
 
 This project is built with modern Java backend technologies to ensure scalability, maintainability, and ease of development.
 
