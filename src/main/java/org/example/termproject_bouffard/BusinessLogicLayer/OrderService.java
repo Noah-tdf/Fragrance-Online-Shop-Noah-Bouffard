@@ -18,6 +18,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final OrderItemRepository orderItemRepository;
     private final OrderMapper orderMapper;
 
     public List<OrderResponseDTO> getAllOrders() {
@@ -37,35 +38,31 @@ public class OrderService {
         Customer customer = customerRepository.findById(dto.getCustomerId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-
-        Order order = orderMapper.fromRequestModelToEntity(dto);
+        Order order = new Order();
+        order.setOrderDate(dto.getOrderDate());
         order.setCustomer(customer);
-        order.setProduct(product);
-        order.setTotalAmount(product.getPrice() * dto.getQuantity());
+        order.setTotalAmount(0.0);
 
-        Order saved = orderRepository.save(order);
-        return orderMapper.toResponse(saved);
-    }
+        Order savedOrder = orderRepository.save(order);
 
-    public OrderResponseDTO updateOrder(Long id, OrderRequestDTO dto) {
-        Order existing = orderRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        double total = 0.0;
 
-        Customer customer = customerRepository.findById(dto.getCustomerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        for (OrderItemRequestDTO itemDTO : dto.getItems()) {
+            Product product = productRepository.findById(itemDTO.getProductId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+            double subtotal = product.getPrice() * itemDTO.getQuantity();
 
-        existing.setOrderDate(dto.getOrderDate());
-        existing.setCustomer(customer);
-        existing.setProduct(product);
-        existing.setQuantity(dto.getQuantity());
-        existing.setTotalAmount(product.getPrice() * dto.getQuantity());
+            OrderItem item = new OrderItem(savedOrder, product, itemDTO.getQuantity(), subtotal);
+            orderItemRepository.save(item);
 
-        return orderMapper.toResponse(orderRepository.save(existing));
+            total += subtotal;
+        }
+
+        savedOrder.setTotalAmount(total);
+        orderRepository.save(savedOrder);
+
+        return orderMapper.toResponse(savedOrder);
     }
 
     public void deleteOrder(Long id) {

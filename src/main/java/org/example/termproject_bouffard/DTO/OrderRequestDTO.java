@@ -1,9 +1,8 @@
 package org.example.termproject_bouffard.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import java.time.LocalDate;
+import java.util.List;
 
 // Noah Bouffard : 2431848
 
@@ -13,6 +12,5 @@ import java.time.LocalDate;
 public class OrderRequestDTO {
     private LocalDate orderDate;
     private Long customerId;
-    private Long productId;
-    private int quantity;
+    private List<OrderItemRequestDTO> items;
 }

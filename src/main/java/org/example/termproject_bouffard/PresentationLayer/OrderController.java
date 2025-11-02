@@ -34,11 +34,7 @@ public class OrderController {
                 .body(created);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<OrderResponseDTO> updateOrder(@PathVariable Long id, @RequestBody OrderRequestDTO dto) {
-        OrderResponseDTO updated = orderService.updateOrder(id, dto);
-        return ResponseEntity.ok(updated);
-    }
+
 
 
     @DeleteMapping("/{id}")
