@@ -12,5 +12,6 @@ public class ProductResponseDTO {
     private String brand;
     private double price;
     private String description;
-    private CustomerSummary customer;
+    private String notes;
+    private String category;
 }

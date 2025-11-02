@@ -15,7 +15,6 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final CustomerRepository customerRepository;
     private final ProductMapper productMapper;
 
     public List<ProductResponseDTO> getAllProducts() {
@@ -32,10 +31,7 @@ public class ProductService {
     }
 
     public ProductResponseDTO createProduct(ProductRequestDTO dto) {
-        Customer customer = customerRepository.findById(dto.getCustomerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
         Product product = productMapper.fromRequestModelToEntity(dto);
-        product.setCustomer(customer);
         Product saved = productRepository.save(product);
         return productMapper.toResponse(saved);
     }
@@ -43,14 +39,13 @@ public class ProductService {
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO dto) {
         Product existing = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-        Customer customer = customerRepository.findById(dto.getCustomerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
         existing.setName(dto.getName());
         existing.setBrand(dto.getBrand());
         existing.setPrice(dto.getPrice());
         existing.setDescription(dto.getDescription());
-        existing.setCustomer(customer);
+        existing.setNotes(dto.getNotes());
+        existing.setCategory(dto.getCategory());
 
         return productMapper.toResponse(productRepository.save(existing));
     }

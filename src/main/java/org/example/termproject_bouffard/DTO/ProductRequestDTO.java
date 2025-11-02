@@ -11,5 +11,6 @@ public class ProductRequestDTO {
     private String brand;
     private double price;
     private String description;
-    private Long customerId;
+    private String notes;
+    private String category;
 }
