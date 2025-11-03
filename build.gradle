@@ -10,7 +10,7 @@ description = 'TermProject_Bouffard'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -20,9 +20,9 @@ repositories {
 
 dependencies {
     // --- Core Spring Boot Dependencies ---
-    implementation 'org.springframework.boot:spring-boot-starter-web'          // For REST controllers
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'     // For JPA + @Entity + @Id
-    runtimeOnly 'com.h2database:h2'                                            // In-memory database
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
 
     // --- Lombok (auto-generates getters/setters/constructors) ---
     compileOnly 'org.projectlombok:lombok'
