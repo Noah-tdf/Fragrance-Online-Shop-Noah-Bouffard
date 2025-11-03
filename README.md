@@ -44,14 +44,33 @@ bash
 ##  Deployment URL
 [Live Backend on Render](https://fragrance-online-shop-noah-bouffard.onrender.com)
 
-### 🌐 Example Endpoints
+###  Example Endpoints
 | Method | Endpoint | Description |
 |--------|-----------|-------------|
 | GET | `/products` | Get all fragrance products |
 | GET | `/products/{id}` | Get product by ID |
 | POST | `/products` | Add a new product |
 | PUT | `/products/{id}` | Update a product |
-| DELETE | `/products/{id}` | Delete a product |
+| DELETE | `/products/{id}` | Delete a product 
+
+### Example to use 
+
+GET : https://fragrance-online-shop-noah-bouffard.onrender.com/products
+
+```json
+[
+  {
+    "id": 1,
+    "name": "YSL Babycat",
+    "brand": "Yves Saint Laurent",
+    "price": 320,
+    "description": "Warm vanilla amber scent",
+    "notes": "Amber, Vanilla",
+    "category": "Unisex"
+  }
+]
+
+```
 
 ### 🗄️ Database
 - Using in-memory **H2** database
