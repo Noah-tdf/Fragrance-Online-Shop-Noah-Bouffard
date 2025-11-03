@@ -2,6 +2,8 @@ package org.example.termproject_bouffard;
 
 import jakarta.transaction.Transactional;
 import org.example.termproject_bouffard.DataAccessLayer.*;
+import org.springframework.context.annotation.Bean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -12,70 +14,58 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class TermProjectBouffardApplication implements CommandLineRunner {
+public class TermProjectBouffardApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(TermProjectBouffardApplication.class);
-
-    private final CustomerRepository customerRepo;
-    private final ProductRepository productRepo;
-    private final OrderRepository orderRepo;
-    private final OrderItemRepository orderItemRepo;
-
-    public TermProjectBouffardApplication(CustomerRepository customerRepo,
-                                          ProductRepository productRepo,
-                                          OrderRepository orderRepo,
-                                          OrderItemRepository orderItemRepo) {
-        this.customerRepo = customerRepo;
-        this.productRepo = productRepo;
-        this.orderRepo = orderRepo;
-        this.orderItemRepo = orderItemRepo;
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(TermProjectBouffardApplication.class, args);
         logger.info("Fragrance Online Shop Backend Started Successfully!");
     }
 
-    @Override
+    @Bean
     @Transactional
-    public void run(String... args) {
-        List<Customer> customers = createCustomers();
-        List<Product> products = createProducts();
+    public CommandLineRunner seedData(CustomerRepository customerRepo,
+                                      ProductRepository productRepo,
+                                      OrderRepository orderRepo,
+                                      OrderItemRepository orderItemRepo) {
+        return args -> {
+            List<Customer> customers = createCustomers();
+            List<Product> products = createProducts();
+            customerRepo.saveAll(customers);
+            productRepo.saveAll(products);
 
-        customerRepo.saveAll(customers);
-        productRepo.saveAll(products);
+            List<Order> orders = new ArrayList<>();
+            List<OrderItem> orderItems = new ArrayList<>();
 
-        List<Order> orders = new ArrayList<>();
-        List<OrderItem> orderItems = new ArrayList<>();
+            for (int i = 0; i < customers.size(); i++) {
+                Order order = new Order();
+                order.setCustomer(customers.get(i));
+                order.setOrderDate(LocalDate.now().minusDays((int) (Math.random() * 30)));
+                orderRepo.save(order);
 
-        for (int i = 0; i < customers.size(); i++) {
-            Order order = new Order();
-            order.setCustomer(customers.get(i));
-            order.setOrderDate(LocalDate.now().minusDays((int) (Math.random() * 30)));
-            orderRepo.save(order);
+                Product product = products.get(i % products.size());
+                int qty = (i % 3) + 1;
+                double subtotal = product.getPrice() * qty;
+                OrderItem item = new OrderItem(order, product, qty, subtotal);
+                orderItems.add(item);
+                orders.add(order);
+            }
 
-            Product product = products.get(i % products.size());
-            int qty = (i % 3) + 1;
-            double subtotal = product.getPrice() * qty;
-            OrderItem item = new OrderItem(order, product, qty, subtotal);
+            orderItemRepo.saveAll(orderItems);
 
-            orderItems.add(item);
-            orders.add(order);
-        }
+            orders.forEach(order -> {
+                double total = orderItems.stream()
+                        .filter(i -> i.getOrder().equals(order))
+                        .mapToDouble(OrderItem::getSubtotal)
+                        .sum();
+                order.setTotalAmount(total);
+            });
+            orderRepo.saveAll(orders);
 
-        orderItemRepo.saveAll(orderItems);
-
-        orders.forEach(order -> {
-            double total = orderItems.stream()
-                    .filter(i -> i.getOrder().equals(order))
-                    .mapToDouble(OrderItem::getSubtotal)
-                    .sum();
-            order.setTotalAmount(total);
-        });
-        orderRepo.saveAll(orders);
-
-        logger.info("Seeded {} customers, {} products, {} orders, {} order items",
-                customers.size(), products.size(), orders.size(), orderItems.size());
+            logger.info("Seeded {} customers, {} products, {} orders, {} order items",
+                    customers.size(), products.size(), orders.size(), orderItems.size());
+        };
     }
 
     private List<Customer> createCustomers() {

@@ -1,5 +1,6 @@
 package org.example.termproject_bouffard.BusinessLogicLayer;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.termproject_bouffard.DataAccessLayer.*;
 import org.example.termproject_bouffard.DTO.*;
@@ -64,9 +65,20 @@ public class ProductService {
     }
 
 
+    @Transactional
     public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
-        productRepository.deleteById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Product not found"));
+
+        List<OrderItem> items = orderItemRepository.findByProduct(product);
+        if (!items.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cannot delete product that is part of existing orders."
+            );
+        }
+
+        productRepository.delete(product);
     }
 }

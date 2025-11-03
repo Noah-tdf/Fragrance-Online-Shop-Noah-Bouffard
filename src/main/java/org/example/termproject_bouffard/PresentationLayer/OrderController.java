@@ -14,36 +14,39 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService;
-
-    @GetMapping
-    public List<OrderResponseDTO> getAllOrders() {
-        return orderService.getAllOrders();
-    }
-
-    @GetMapping("/{id}")
-    public OrderResponseDTO getOrderById(@PathVariable Long id) {
-        return orderService.getOrderById(id);
-    }
-
-    @PostMapping
-    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderRequestDTO dto) {
-        OrderResponseDTO created = orderService.createOrder(dto);
-        return ResponseEntity
-                .created(URI.create("/orders/" + created.getId()))
-                .body(created);
-    }
-
-    @GetMapping("/customers/{customerId}")
-    public List<OrderResponseDTO> getOrdersByCustomerId(@PathVariable Long customerId) {
-        return orderService.getOrdersByCustomerId(customerId);
-    }
+        private final OrderService orderService;
 
 
+        @GetMapping
+        public List<OrderResponseDTO> getAllOrders() {
+            return orderService.getAllOrders();
+        }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-    }
+        @GetMapping("/{id}")
+        public OrderResponseDTO getOrderById(@PathVariable Long id) {
+            return orderService.getOrderById(id);
+        }
+
+        @PostMapping
+        public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderRequestDTO dto) {
+            OrderResponseDTO created = orderService.createOrder(dto);
+            return ResponseEntity
+                    .created(URI.create("/orders/" + created.getId()))
+                    .body(created);
+        }
+
+        @GetMapping("/customers/{customerId}")
+        public List<OrderResponseDTO> getOrdersByCustomerId(@PathVariable Long customerId) {
+            return orderService.getOrdersByCustomerId(customerId);
+        }
+
+       @DeleteMapping("/{id}")
+          public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+            orderService.deleteOrder(id);
+            return ResponseEntity.noContent().build();
+        }
+
+
+
+
 }
