@@ -34,6 +34,10 @@ public class OrderController {
                 .body(created);
     }
 
+    @GetMapping("/customers/{customerId}")
+    public List<OrderResponseDTO> getOrdersByCustomerId(@PathVariable Long customerId) {
+        return orderService.getOrdersByCustomerId(customerId);
+    }
 
 
 

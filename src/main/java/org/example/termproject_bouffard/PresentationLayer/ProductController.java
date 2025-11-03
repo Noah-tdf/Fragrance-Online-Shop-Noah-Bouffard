@@ -34,6 +34,19 @@ public class ProductController {
                 .body(created);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDTO dto) {
+        ProductResponseDTO updated = productService.updateProduct(id, dto);
+        return ResponseEntity.ok(updated);
+    }
+
+
+    @GetMapping("/orders/{orderId}")
+    public List<ProductResponseDTO> getProductsByOrderId(@PathVariable Long orderId) {
+        return productService.getProductsByOrderId(orderId);
+    }
+
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable Long id) {

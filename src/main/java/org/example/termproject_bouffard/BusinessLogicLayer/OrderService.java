@@ -61,9 +61,21 @@ public class OrderService {
 
         savedOrder.setTotalAmount(total);
         orderRepository.save(savedOrder);
+        savedOrder.setItems(orderItemRepository.findByOrder(savedOrder));
 
         return orderMapper.toResponse(savedOrder);
     }
+
+    public List<OrderResponseDTO> getOrdersByCustomerId(Long customerId) {
+        if (!customerRepository.existsById(customerId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+
+        List<Order> orders = orderRepository.findByCustomerId(customerId);
+        return orders.stream()
+                .map(orderMapper::toResponse)
+                .toList();
+    }
+
 
     public void deleteOrder(Long id) {
         if (!orderRepository.existsById(id))

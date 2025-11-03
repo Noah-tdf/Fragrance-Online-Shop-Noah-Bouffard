@@ -16,6 +16,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final OrderItemRepository orderItemRepository;
+    private final OrderRepository orderRepository;
 
     public List<ProductResponseDTO> getAllProducts() {
         return productRepository.findAll()
@@ -49,6 +51,18 @@ public class ProductService {
 
         return productMapper.toResponse(productRepository.save(existing));
     }
+
+    public List<ProductResponseDTO> getProductsByOrderId(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        List<OrderItem> items = orderItemRepository.findByOrder(order);
+
+        return items.stream()
+                .map(item -> productMapper.toResponse(item.getProduct()))
+                .toList();
+    }
+
 
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id))
