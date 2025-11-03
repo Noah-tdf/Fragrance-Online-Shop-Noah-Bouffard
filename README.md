@@ -41,6 +41,23 @@ bash
 ./gradlew bootRun
 
 
+###  Deployment URL
+[Live Backend on Render](https://fragrance-online-shop-noah-bouffard.onrender.com)
+
+### 🌐 Example Endpoints
+| Method | Endpoint | Description |
+|--------|-----------|-------------|
+| GET | `/products` | Get all fragrance products |
+| GET | `/products/{id}` | Get product by ID |
+| POST | `/products` | Add a new product |
+| PUT | `/products/{id}` | Update a product |
+| DELETE | `/products/{id}` | Delete a product |
+
+### 🗄️ Database
+- Using in-memory **H2** database
+- Seeded automatically with 10+ records on startup (`data.sql`)
+
+
 
 ###  API Endpoints
 
