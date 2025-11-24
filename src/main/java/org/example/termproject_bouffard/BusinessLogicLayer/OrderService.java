@@ -39,7 +39,6 @@ public class OrderService {
                 .toList();
     }
 
-
     public OrderResponseDTO getOrderById(Long id) {
         return orderRepository.findById(id)
                 .map(orderMapper::toResponse)
@@ -77,6 +76,7 @@ public class OrderService {
     }
 
     private void updateItems(Order order, List<OrderItemRequestDTO> items) {
+
         List<OrderItem> oldItems = orderItemRepository.findByOrder(order);
         Map<Long, OrderItem> existing = new HashMap<>();
 
@@ -106,9 +106,11 @@ public class OrderService {
         }
 
         orderItemRepository.deleteAll(existing.values());
+
         order.setTotalAmount(total);
         orderRepository.save(order);
-        order.setItems(orderItemRepository.findByOrder(order));
+
+
     }
 
     public void deleteOrder(Long id) {
