@@ -28,6 +28,18 @@ public class OrderService {
                 .toList();
     }
 
+    public List<OrderResponseDTO> getOrdersByCustomerId(Long customerId) {
+        if (!customerRepository.existsById(customerId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
+
+        return orderRepository.findByCustomerId(customerId)
+                .stream()
+                .map(orderMapper::toResponse)
+                .toList();
+    }
+
+
     public OrderResponseDTO getOrderById(Long id) {
         return orderRepository.findById(id)
                 .map(orderMapper::toResponse)
