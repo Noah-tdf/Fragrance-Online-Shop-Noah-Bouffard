@@ -1,41 +1,43 @@
 package org.example.termproject_bouffard.Mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.example.termproject_bouffard.DataAccessLayer.*;
 import org.example.termproject_bouffard.DTO.*;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
-// Noah Bouffard : 2431848
+import java.time.format.DateTimeFormatter;
 
 @Component
+@RequiredArgsConstructor
 public class OrderMapper {
 
+    private final CustomerMapper customerMapper;
+
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     public OrderResponseDTO toResponse(Order order) {
-        Customer c = order.getCustomer();
-
-        CustomerSummary customerSummary = new CustomerSummary(
-                c.getId(),
-                c.getFirstName(),
-                c.getLastName()
-        );
-
-        List<OrderItemSummary> itemSummaries = order.getItems()
-                .stream()
-                .map(item -> new OrderItemSummary(
-                        item.getProduct().getId(),
-                        item.getProduct().getName(),
-                        item.getProduct().getBrand(),
-                        item.getQuantity(),
-                        item.getSubtotal()
-                ))
-                .toList();
+        if (order == null) return null;
 
         return new OrderResponseDTO(
                 order.getId(),
-                order.getOrderDate(),
-                customerSummary,
-                itemSummaries,
-                order.getTotalAmount()
+                order.getOrderDate().format(DATE_FORMAT),
+                order.getTotalAmount(),
+                customerMapper.toResponse(order.getCustomer()),
+                order.getItems()
+                        .stream()
+                        .map(this::toItemResponse)
+                        .toList()
+        );
+    }
+
+    public OrderItemResponseDTO toItemResponse(OrderItem item) {
+        return new OrderItemResponseDTO(
+                item.getId(),
+                item.getProduct().getId(),
+                item.getProduct().getName(),
+                item.getQuantity(),
+                item.getSubtotal()
         );
     }
 }

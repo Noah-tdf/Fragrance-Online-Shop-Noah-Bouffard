@@ -1,16 +1,16 @@
 package org.example.termproject_bouffard.DTO;
 
 import lombok.*;
-import java.time.LocalDate;
 import java.util.List;
-
-// Noah Bouffard : 2431848
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
+// Noah Bouffard 2431848
+
 public class OrderRequestDTO {
-    private LocalDate orderDate;
+    private String orderDate;
     private Long customerId;
     private List<OrderItemRequestDTO> items;
 }
