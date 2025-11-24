@@ -1,8 +1,17 @@
 package org.example.termproject_bouffard.BusinessLogicLayer;
 
 import lombok.RequiredArgsConstructor;
-import org.example.termproject_bouffard.DataAccessLayer.*;
-import org.example.termproject_bouffard.DTO.*;
+import org.example.termproject_bouffard.DataAccessLayer.Customer;
+import org.example.termproject_bouffard.DataAccessLayer.CustomerRepository;
+import org.example.termproject_bouffard.DataAccessLayer.Order;
+import org.example.termproject_bouffard.DataAccessLayer.OrderItem;
+import org.example.termproject_bouffard.DataAccessLayer.OrderItemRepository;
+import org.example.termproject_bouffard.DataAccessLayer.OrderRepository;
+import org.example.termproject_bouffard.DataAccessLayer.Product;
+import org.example.termproject_bouffard.DataAccessLayer.ProductRepository;
+import org.example.termproject_bouffard.DTO.OrderItemRequestDTO;
+import org.example.termproject_bouffard.DTO.OrderRequestDTO;
+import org.example.termproject_bouffard.DTO.OrderResponseDTO;
 import org.example.termproject_bouffard.Mapper.OrderMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,6 +32,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderMapper orderMapper;
+
 
     public List<OrderResponseDTO> getAllOrders() {
         return orderRepository.findAll()
@@ -76,6 +86,8 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
+
+
     public OrderResponseDTO updateOrder(Long id, OrderRequestDTO dto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() ->
@@ -97,6 +109,7 @@ public class OrderService {
     }
 
 
+
     private double applyItemsToOrder(Order order, List<OrderItemRequestDTO> itemDTOs) {
         List<OrderItem> existingItems = orderItemRepository.findByOrder(order);
         Map<Long, OrderItem> existingMap = new HashMap<>();
@@ -112,7 +125,7 @@ public class OrderService {
             Long productId = itemDTO.getProductId();
             int quantity = itemDTO.getQuantity();
 
-            if (quantity <= 0) {
+            if (quantity <= 0 || productId == null) {
                 continue;
             }
 
@@ -124,12 +137,12 @@ public class OrderService {
             total += subtotal;
 
             OrderItem existing = existingMap.remove(productId);
-
             if (existing != null) {
                 existing.setQuantity(quantity);
                 existing.setSubtotal(subtotal);
                 orderItemRepository.save(existing);
             } else {
+
                 OrderItem newItem = new OrderItem(order, product, quantity, subtotal);
                 orderItemRepository.save(newItem);
             }
