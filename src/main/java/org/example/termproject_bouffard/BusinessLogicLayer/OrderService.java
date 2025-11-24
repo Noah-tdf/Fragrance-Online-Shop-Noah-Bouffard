@@ -45,21 +45,9 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        double total = 0.0;
-
-        for (OrderItemRequestDTO itemDTO : dto.getItems()) {
-            Product product = productRepository.findById(itemDTO.getProductId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-
-            double subtotal = product.getPrice() * itemDTO.getQuantity();
-
-            OrderItem item = new OrderItem(savedOrder, product, itemDTO.getQuantity(), subtotal);
-            orderItemRepository.save(item);
-
-            total += subtotal;
-        }
-
+        double total = saveOrderItems(savedOrder, dto.getItems());
         savedOrder.setTotalAmount(total);
+
         orderRepository.save(savedOrder);
         savedOrder.setItems(orderItemRepository.findByOrder(savedOrder));
 
@@ -70,16 +58,54 @@ public class OrderService {
         if (!customerRepository.existsById(customerId))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
 
-        List<Order> orders = orderRepository.findByCustomerId(customerId);
-        return orders.stream()
+        return orderRepository.findByCustomerId(customerId)
+                .stream()
                 .map(orderMapper::toResponse)
                 .toList();
     }
-
 
     public void deleteOrder(Long id) {
         if (!orderRepository.existsById(id))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
         orderRepository.deleteById(id);
+    }
+
+    public OrderResponseDTO updateOrder(Long id, OrderRequestDTO dto) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        Customer customer = customerRepository.findById(dto.getCustomerId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+
+        order.setCustomer(customer);
+        order.setOrderDate(dto.getOrderDate());
+
+        List<OrderItem> oldItems = orderItemRepository.findByOrder(order);
+        orderItemRepository.deleteAll(oldItems); // fixed warning
+
+        double total = saveOrderItems(order, dto.getItems());
+        order.setTotalAmount(total);
+
+        orderRepository.save(order);
+        order.setItems(orderItemRepository.findByOrder(order));
+
+        return orderMapper.toResponse(order);
+    }
+
+    private double saveOrderItems(Order order, List<OrderItemRequestDTO> itemDTOs) {
+        double total = 0.0;
+
+        for (OrderItemRequestDTO itemDTO : itemDTOs) {
+            Product product = productRepository.findById(itemDTO.getProductId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+
+            double subtotal = product.getPrice() * itemDTO.getQuantity();
+            OrderItem newItem = new OrderItem(order, product, itemDTO.getQuantity(), subtotal);
+            orderItemRepository.save(newItem);
+
+            total += subtotal;
+        }
+
+        return total;
     }
 }

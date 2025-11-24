@@ -46,6 +46,15 @@ public class OrderController {
             return ResponseEntity.noContent().build();
         }
 
+    @PutMapping("/{id}")
+    public OrderResponseDTO updateOrder(
+            @PathVariable Long id,
+            @RequestBody OrderRequestDTO dto
+    ) {
+        return orderService.updateOrder(id, dto);
+    }
+
+
 
 
 
