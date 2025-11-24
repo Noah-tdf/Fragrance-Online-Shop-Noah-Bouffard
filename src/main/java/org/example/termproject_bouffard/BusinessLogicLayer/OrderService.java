@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 // Noah Bouffard : 2431848
 
@@ -71,6 +73,7 @@ public class OrderService {
     }
 
     public OrderResponseDTO updateOrder(Long id, OrderRequestDTO dto) {
+
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
@@ -80,17 +83,47 @@ public class OrderService {
         order.setCustomer(customer);
         order.setOrderDate(dto.getOrderDate());
 
-        List<OrderItem> oldItems = orderItemRepository.findByOrder(order);
-        orderItemRepository.deleteAll(oldItems); // fixed warning
+        // EXISTING ITEMS
+        List<OrderItem> existingItems = orderItemRepository.findByOrder(order);
 
-        double total = saveOrderItems(order, dto.getItems());
+        Map<Long, OrderItem> existingMap = existingItems.stream()
+                .collect(Collectors.toMap(item -> item.getProduct().getId(), item -> item));
+
+        double total = 0.0;
+
+        for (OrderItemRequestDTO itemDTO : dto.getItems()) {
+            Product product = productRepository.findById(itemDTO.getProductId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+
+            double subtotal = product.getPrice() * itemDTO.getQuantity();
+
+            if (existingMap.containsKey(itemDTO.getProductId())) {
+                // Update existing item
+                OrderItem existing = existingMap.get(itemDTO.getProductId());
+                existing.setQuantity(itemDTO.getQuantity());
+                existing.setSubtotal(subtotal);
+                orderItemRepository.save(existing);
+
+                existingMap.remove(itemDTO.getProductId());
+            } else {
+                // Add new item
+                OrderItem newItem = new OrderItem(order, product, itemDTO.getQuantity(), subtotal);
+                orderItemRepository.save(newItem);
+            }
+
+            total += subtotal;
+        }
+
+        orderItemRepository.deleteAll(existingMap.values());
+
         order.setTotalAmount(total);
-
         orderRepository.save(order);
+
         order.setItems(orderItemRepository.findByOrder(order));
 
         return orderMapper.toResponse(order);
     }
+
 
     private double saveOrderItems(Order order, List<OrderItemRequestDTO> itemDTOs) {
         double total = 0.0;
