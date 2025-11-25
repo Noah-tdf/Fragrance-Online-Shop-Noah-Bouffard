@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 // Noah Bouffard : 2431848
 
@@ -83,41 +81,29 @@ public class OrderService {
 
     private void updateItems(Order order, List<OrderItemRequestDTO> items) {
 
-        List<OrderItem> oldItems = orderItemRepository.findByOrder(order);
-        Map<Long, OrderItem> existing = new HashMap<>();
-
-        for (OrderItem oi : oldItems) {
-            existing.put(oi.getProduct().getId(), oi);
-        }
+        order.getItems().clear();
+        orderRepository.save(order);
 
         double total = 0.0;
 
         for (OrderItemRequestDTO req : items) {
+
             Product product = productRepository.findById(req.getProductId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
             double subtotal = product.getPrice() * req.getQuantity();
             total += subtotal;
 
-            OrderItem existingItem = existing.remove(req.getProductId());
-
-            if (existingItem != null) {
-                existingItem.setQuantity(req.getQuantity());
-                existingItem.setSubtotal(subtotal);
-                orderItemRepository.save(existingItem);
-            } else {
-                OrderItem newItem = new OrderItem(order, product, req.getQuantity(), subtotal);
-                orderItemRepository.save(newItem);
-            }
+            OrderItem newItem = new OrderItem(order, product, req.getQuantity(), subtotal);
+            orderItemRepository.save(newItem);
         }
-
-        orderItemRepository.deleteAll(existing.values());
 
         order.setTotalAmount(total);
         orderRepository.save(order);
 
         order.setItems(orderItemRepository.findByOrder(order));
     }
+
 
 
     public void deleteOrder(Long id) {
