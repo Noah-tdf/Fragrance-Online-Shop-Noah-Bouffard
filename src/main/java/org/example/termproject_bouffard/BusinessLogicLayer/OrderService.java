@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.termproject_bouffard.DataAccessLayer.*;
 import org.example.termproject_bouffard.DTO.*;
 import org.example.termproject_bouffard.Mapper.OrderMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // Noah Bouffard : 2431848
 
@@ -49,7 +51,7 @@ public class OrderService {
 
     public OrderResponseDTO createOrder(OrderRequestDTO dto) {
         Customer customer = customerRepository.findById(dto.getCustomerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
         Order order = new Order();
         order.setOrderDate(LocalDate.parse(dto.getOrderDate()));
@@ -57,6 +59,7 @@ public class OrderService {
         order.setTotalAmount(0.0);
 
         Order savedOrder = orderRepository.save(order);
+
         updateItems(savedOrder, dto.getItems());
 
         return orderMapper.toResponse(savedOrder);
@@ -67,7 +70,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Customer customer = customerRepository.findById(dto.getCustomerId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
 
         order.setCustomer(customer);
         order.setOrderDate(LocalDate.parse(dto.getOrderDate()));
@@ -76,6 +79,7 @@ public class OrderService {
 
         return orderMapper.toResponse(order);
     }
+
 
     private void updateItems(Order order, List<OrderItemRequestDTO> items) {
 
@@ -90,7 +94,7 @@ public class OrderService {
 
         for (OrderItemRequestDTO req : items) {
             Product product = productRepository.findById(req.getProductId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
             double subtotal = product.getPrice() * req.getQuantity();
             total += subtotal;
@@ -107,17 +111,22 @@ public class OrderService {
             }
         }
 
-        orderItemRepository.deleteAll(existing.values());
+
+        if (!existing.isEmpty()) {
+            orderItemRepository.deleteAll(existing.values());
+        }
 
         order.setTotalAmount(total);
         orderRepository.save(order);
+
 
         order.setItems(orderItemRepository.findByOrder(order));
     }
 
     public void deleteOrder(Long id) {
-        if (!orderRepository.existsById(id))
+        if (!orderRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         orderRepository.deleteById(id);
     }
 }
