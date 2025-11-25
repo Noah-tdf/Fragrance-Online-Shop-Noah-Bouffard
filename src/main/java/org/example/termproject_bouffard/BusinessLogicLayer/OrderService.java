@@ -15,6 +15,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderService {
 
+    // noah bouffard : 2431848
+
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
@@ -110,12 +112,14 @@ public class OrderService {
         order.setTotalAmount(total);
         orderRepository.save(order);
 
-
+        List<OrderItem> updated = orderItemRepository.findByOrder(order);
+        order.setItems(updated);
     }
 
     public void deleteOrder(Long id) {
         if (!orderRepository.existsById(id))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
         orderRepository.deleteById(id);
     }
 }
