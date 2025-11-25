@@ -94,7 +94,7 @@ public class OrderService {
 
         for (OrderItemRequestDTO req : items) {
             Product product = productRepository.findById(req.getProductId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
             double subtotal = product.getPrice() * req.getQuantity();
             total += subtotal;
@@ -111,17 +111,14 @@ public class OrderService {
             }
         }
 
-
-        if (!existing.isEmpty()) {
-            orderItemRepository.deleteAll(existing.values());
-        }
+        orderItemRepository.deleteAll(existing.values());
 
         order.setTotalAmount(total);
         orderRepository.save(order);
 
-
         order.setItems(orderItemRepository.findByOrder(order));
     }
+
 
     public void deleteOrder(Long id) {
         if (!orderRepository.existsById(id)) {
