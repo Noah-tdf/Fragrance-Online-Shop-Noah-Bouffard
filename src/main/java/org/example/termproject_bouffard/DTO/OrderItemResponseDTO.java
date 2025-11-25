@@ -1,9 +1,9 @@
 package org.example.termproject_bouffard.DTO;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class OrderItemResponseDTO {
     private Long id;
